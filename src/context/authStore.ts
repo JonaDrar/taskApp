@@ -9,7 +9,17 @@ import {
 } from 'firebase/auth';
 import Cookies from 'js-cookie';
 
-const useAuthStore = create((set) => ({
+interface AuthStore {
+  user: any | null;
+  loading: boolean;
+  setUser: (user: any) => void;
+  clearUser: () => void;
+  initializeAuth: () => void;
+  login: () => Promise<void>;
+  logout: () => void;
+}
+
+const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   loading: true,
   setUser: (user) => set({ user, loading: false }),

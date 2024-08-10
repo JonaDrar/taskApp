@@ -6,13 +6,14 @@ import { Menu } from '@/components/Menu';
 import { db } from '@/lib/firebase';
 import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
 import useAuthStore from '@/context/authStore';
+import { TaskInterface } from '../types/Tasks';
 
 export default function Home() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<TaskInterface[]>([]); // Define el tipo de estado como TaskInterface[]
   const [loading, setLoading] = useState(true);
   const userId = useAuthStore((state) => state.user?.uid);
 
-  const filterAndSortTasks = (tasks) => {
+  const filterAndSortTasks = (tasks: TaskInterface[]) => {
     const oneDayInMillis = 24 * 60 * 60 * 1000;
     const now = new Date().getTime();
 
@@ -62,14 +63,15 @@ export default function Home() {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const tasksData = snapshot.docs.map((doc) => ({
+      const tasksData: TaskInterface[] = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...(doc.data() as Omit<TaskInterface, 'id'>), // Asegúrate de que los datos cumplen con TaskInterface, omitiendo el ID
       }));
 
       const filteredAndSortedTasks = filterAndSortTasks(tasksData);
       setTasks(filteredAndSortedTasks);
     });
+
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [userId]);

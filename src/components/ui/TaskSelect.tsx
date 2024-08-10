@@ -15,7 +15,6 @@ export const TaskSelect = ({ status, onChange }: { status: string, onChange: (va
     <Select
       disabled={status === 'done'}
       onValueChange={onChange}
-      onClick={(e) => e.stopPropagation()}  // Evitar que el clic en el Select cierre el diálogo
     >
       <SelectTrigger className="col-span-3 bg-black">
         <SelectValue placeholder={status} />
