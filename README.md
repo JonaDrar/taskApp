@@ -103,4 +103,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Jonathan Araya - [j.arayarobles@gmail.com](mailto:j.arayarobles@gmail.com)
 
-Project Link: [https://github.com/username/task-manager](https://github.com/username/task-manager)
+Project Link: [https://github.com/JonaDrar/taskApp](https://github.com/JonaDrar/taskApp)
