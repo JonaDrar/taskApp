@@ -1,47 +1,97 @@
-import { TaskDialog } from "@/components/ui/TaskDialog";
+'use client';
+import { useEffect, useState } from 'react';
+import { TaskDialog } from '@/components/ui/TaskDialog';
 import { AddTask } from '@/components/AddTask';
 import { Menu } from '@/components/Menu';
-
-const tasks = [
-  {
-    id: 1,
-    title: 'Task 1',
-    description: 'Task 1 descriptionlakjslkjasdlfkasd flasdkjflasdkfn sadlfij8ef kam dfoqihefñlawen f werqfijqw flwreqifqw fijhfrnglte gioewrgkerw greihg',
-    status: 'todo',
-    expirationDate: '2024-07-25T22:00:00.000Z',
-    createdAt: '2024-07-24T10:00:00.000Z',
-  },
-  {
-    id: 2,
-    title: 'Task 2lkj hsdlkashdl kasjlk as1234we 1234efwe',
-    description: 'Task 2 description',
-    status: 'wip',
-    createdAt: '2024-07-22T19:00:00.000Z',
-    updatedAt: '2024-07-24T19:00:00.000Z',
-  },
-  {
-    id: 3,
-    title: 'Task 3',
-    description: 'Task 3 description',
-    status: 'done',
-    expirationDate: '2024-07-24T19:00:00.000Z',
-    createdAt: '2024-07-23T19:00:00.000Z',
-    updatedAt: '2024-07-24T19:00:00.000Z',
-  },
-];
+import { db } from '@/lib/firebase';
+import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
+import useAuthStore from '@/context/authStore';
 
 export default function Home() {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const userId = useAuthStore((state) => state.user?.uid);
+
+  const filterAndSortTasks = (tasks) => {
+    const oneDayInMillis = 24 * 60 * 60 * 1000;
+    const now = new Date().getTime();
+
+    const filtered = tasks
+      .filter(task => {
+        // Filtra las tareas que no están completadas o que han sido completadas en las últimas 24 horas
+        if (task.status !== 'done') {
+          return true;
+        }
+
+        const completedTime = task.updatedAt?.seconds ? task.updatedAt.seconds * 1000 : 0;
+        return now - completedTime <= oneDayInMillis;
+      })
+      .sort((a, b) => {
+        // Mueve las tareas "done" al final
+        if (a.status === 'done' && b.status !== 'done') {
+          return 1;
+        }
+        if (a.status !== 'done' && b.status === 'done') {
+          return -1;
+        }
+
+        const aExpirationTime = a.expirationDate?.seconds ? a.expirationDate.seconds * 1000 : Infinity;
+        const bExpirationTime = b.expirationDate?.seconds ? b.expirationDate.seconds * 1000 : Infinity;
+        const aCreatedTime = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0;
+        const bCreatedTime = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0;
+
+        // Ordena por proximidad a expirar
+        if (aExpirationTime !== bExpirationTime) {
+          return aExpirationTime - bExpirationTime;
+        }
+
+        // Si no hay expiración o son iguales, ordena por antigüedad
+        return aCreatedTime - bCreatedTime;
+      });
+
+    setLoading(false);
+    return filtered;
+  };
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const q = query(
+      collection(db, `users/${userId}/tasks`),
+      orderBy('createdAt', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const tasksData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const filteredAndSortedTasks = filterAndSortTasks(tasksData);
+      setTasks(filteredAndSortedTasks);
+    });
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [userId]);
+
   return (
     <main className="flex min-h-screen flex-col items-center p-24 gap-12">
- 
       <h1 className="text-3xl font-bold">Tasks</h1>
       <ul className="flex flex-col gap-4 min-w-96">
-        {tasks.map((task) => (
-          <TaskDialog key={task.id} task={task} />
-        ))}
+        {
+          loading ? (
+            <p className='text-center'>Loading tasks...</p>
+          ) : tasks.length === 0 ? (
+            <li className="text-white text-center">No tasks yet</li>
+          ) : (
+            tasks.map((task) => (
+              <TaskDialog key={task.id} task={task} />
+            ))
+          )
+        }
       </ul>
       <AddTask />
       <Menu />
     </main>
   );
-};
+}

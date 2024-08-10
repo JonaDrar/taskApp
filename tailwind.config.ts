@@ -80,12 +80,17 @@ const config = {
           '50%': { transform: 'translate(0)' },
           '75%': { transform: 'translate(-4px, 0px)' },
         },
+        'deletereveal': {
+          '0%': { transform: 'translateX(-75px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         vibrate: 'vibrate 0.5s linear infinite',
         'vibrate-intense': 'vibrate-intense 0.3s linear infinite',
+        'deletereveal': 'deletereveal 0.3s ease-in-out',
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

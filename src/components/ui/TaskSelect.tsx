@@ -8,10 +8,15 @@ import {
   SelectValue,
 } from './select';
 
-export const TaskSelect = ({ status }: { status: string }) => {
+export const TaskSelect = ({ status, onChange }: { status: string, onChange: (value: string) => void }) => {
   const statusOptions = ['todo', 'wip', 'done'];
+  
   return (
-    <Select disabled={status === 'done'}>
+    <Select
+      disabled={status === 'done'}
+      onValueChange={onChange}
+      onClick={(e) => e.stopPropagation()}  // Evitar que el clic en el Select cierre el diálogo
+    >
       <SelectTrigger className="col-span-3 bg-black">
         <SelectValue placeholder={status} />
       </SelectTrigger>
@@ -28,7 +33,7 @@ export const TaskSelect = ({ status }: { status: string }) => {
                 (status === 'wip' && s === 'todo')
               }
             >
-              {status}
+              {s}
             </SelectItem>
           ))}
         </SelectGroup>
