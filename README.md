@@ -1,10 +1,10 @@
 # 📝 Task Manager
 
-![GitHub last commit](https://img.shields.io/github/last-commit/JonaDrar/task-manager?style=flat-square)
-![GitHub issues](https://img.shields.io/github/issues/JonaDrar/task-manager?style=flat-square)
-![GitHub stars](https://img.shields.io/github/stars/JonaDrar/task-manager?style=flat-square)
-![GitHub forks](https://img.shields.io/github/forks/JonaDrar/task-manager?style=flat-square)
-![GitHub license](https://img.shields.io/github/license/JonaDrar/task-manager?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/JonaDrar/taskApp?style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/JonaDrar/taskApp?style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/JonaDrar/taskApp?style=flat-square)
+![GitHub forks](https://img.shields.io/github/forks/JonaDrar/taskApp?style=flat-square)
+![GitHub license](https://img.shields.io/github/license/JonaDrar/taskApp?style=flat-square)
 
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=white)
