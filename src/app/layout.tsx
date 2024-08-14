@@ -3,6 +3,7 @@ import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react"
 import AuthProvider from '@/components/AuthProvider';
 
 const fontSans = FontSans({
@@ -28,8 +29,9 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <SpeedInsights />
         <AuthProvider>{children}</AuthProvider>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
